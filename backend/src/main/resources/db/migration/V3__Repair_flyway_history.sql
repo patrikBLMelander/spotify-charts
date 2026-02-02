@@ -1,8 +1,19 @@
--- Repair Flyway history by removing failed migration records
--- This allows V2 to run and clean the database
+-- Repair Flyway history and reset database in one step
+-- This fixes the failed V2 migration issue by doing everything V2 was supposed to do
 
--- Remove failed V2 migration from history
-DELETE FROM flyway_schema_history WHERE version = '2';
+SET FOREIGN_KEY_CHECKS = 0;
 
--- Now V2 can run on next deployment to drop tables and clear history
--- Then V1 will recreate tables with correct VARCHAR(36) schema
+-- Drop all tables
+DROP TABLE IF EXISTS track_statistics;
+DROP TABLE IF EXISTS chart_entries;
+DROP TABLE IF EXISTS track_artists;
+DROP TABLE IF EXISTS artists;
+DROP TABLE IF EXISTS tracks;
+DROP TABLE IF EXISTS playlists;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS weeks;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- Clean ALL Flyway history to allow V1 to run again with correct schema
+DELETE FROM flyway_schema_history;
