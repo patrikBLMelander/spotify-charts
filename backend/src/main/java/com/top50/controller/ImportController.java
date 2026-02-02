@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/import")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
 public class ImportController {
