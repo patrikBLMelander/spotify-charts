@@ -16,7 +16,6 @@ DROP TABLE IF EXISTS weeks;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Clean Flyway history to remove failed migration records
+-- Clean ALL Flyway history to allow V1 to run again with correct schema
 -- Note: This must be done after dropping tables to avoid foreign key issues
--- Remove only version 2 (failed migration), keep version 1 so V3 can run
-DELETE FROM flyway_schema_history WHERE version = '2';
+DELETE FROM flyway_schema_history;
