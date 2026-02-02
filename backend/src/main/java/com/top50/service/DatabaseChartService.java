@@ -25,21 +25,32 @@ public class DatabaseChartService {
     private final WeekService weekService;
     
     public List<String> getAllWeeks(String username) {
-        User user = userRepository.findByUsernameAndDeletedAtIsNull(username)
-            .orElseThrow(() -> new RuntimeException("User not found: " + username));
-        
-        List<Playlist> playlists = playlistRepository.findByUserAndDeletedAtIsNull(user);
-        if (playlists.isEmpty()) {
+        try {
+            User user = userRepository.findByUsernameAndDeletedAtIsNull(username)
+                .orElse(null);
+            
+            if (user == null) {
+                log.warn("User not found: {}. Returning empty list.", username);
+                return Collections.emptyList();
+            }
+            
+            List<Playlist> playlists = playlistRepository.findByUserAndDeletedAtIsNull(user);
+            if (playlists.isEmpty()) {
+                log.debug("No playlists found for user: {}. Returning empty list.", username);
+                return Collections.emptyList();
+            }
+            
+            // For now, use the first playlist (in future, could support multiple)
+            Playlist playlist = playlists.get(0);
+            List<Week> weeks = chartEntryRepository.findDistinctWeeksByPlaylist(playlist);
+            
+            return weeks.stream()
+                .map(Week::getIsoFormat)
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error getting weeks for user: {}", username, e);
             return Collections.emptyList();
         }
-        
-        // For now, use the first playlist (in future, could support multiple)
-        Playlist playlist = playlists.get(0);
-        List<Week> weeks = chartEntryRepository.findDistinctWeeksByPlaylist(playlist);
-        
-        return weeks.stream()
-            .map(Week::getIsoFormat)
-            .collect(Collectors.toList());
     }
     
     @Transactional(readOnly = true)
