@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import './ImportForm.css'
 
-const API_BASE_URL = 'http://localhost:8080/api'
+const API_BASE_URL = '/api'
 
 function ImportForm({ onImportSuccess }) {
   const [importMode, setImportMode] = useState('json') // 'url' or 'json'

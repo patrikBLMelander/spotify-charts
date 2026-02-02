@@ -3,7 +3,7 @@ import axios from 'axios'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import './UserChartView.css'
 
-const API_BASE_URL = 'http://localhost:8080/api'
+const API_BASE_URL = '/api'
 
 function UserChartView({ user, onWeekChange, onTracksLoaded }) {
   const [weeks, setWeeks] = useState([])

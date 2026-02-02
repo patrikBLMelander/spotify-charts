@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import './ChartView.css'
 
-const API_BASE_URL = 'http://localhost:8080/api'
+const API_BASE_URL = '/api'
 
 // Generate colors for tracks
 const COLORS = [
