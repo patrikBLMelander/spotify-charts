@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ChartEntry {
     @Id
-    @Column(length = 36, columnDefinition = "CHAR(36)")
+    @Column(length = 36)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)

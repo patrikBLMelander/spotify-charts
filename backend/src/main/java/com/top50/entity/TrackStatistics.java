@@ -20,7 +20,7 @@ public class TrackStatistics {
     private String trackId;
 
     @Id
-    @Column(name = "playlist_id", length = 36, columnDefinition = "CHAR(36)")
+    @Column(name = "playlist_id", length = 36)
     private String playlistId;
 
     @Column(name = "total_appearances", nullable = false)

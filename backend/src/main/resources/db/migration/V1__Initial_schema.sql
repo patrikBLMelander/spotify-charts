@@ -5,7 +5,7 @@
 -- 1. Weeks Table (Improved design)
 -- ============================================
 CREATE TABLE weeks (
-    id CHAR(36) PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
     week_year INT NOT NULL,
     week_number INT NOT NULL,
     start_date DATE NOT NULL,
@@ -24,7 +24,7 @@ CREATE INDEX idx_weeks_start_date ON weeks(start_date);
 -- 2. Users Table
 -- ============================================
 CREATE TABLE users (
-    id CHAR(36) PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE,
     password_hash VARCHAR(255),
@@ -42,8 +42,8 @@ CREATE INDEX idx_users_public ON users(is_public);
 -- 3. Playlists Table
 -- ============================================
 CREATE TABLE playlists (
-    id CHAR(36) PRIMARY KEY,
-    user_id CHAR(36) NOT NULL,
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
     name VARCHAR(100) NOT NULL,
     description TEXT,
     is_public BOOLEAN DEFAULT FALSE,
@@ -79,7 +79,7 @@ CREATE INDEX idx_tracks_deleted ON tracks(deleted_at);
 -- 5. Artists Table (Global)
 -- ============================================
 CREATE TABLE artists (
-    id CHAR(36) PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     normalized_name VARCHAR(255) NOT NULL,
     display_name VARCHAR(255),
@@ -95,7 +95,7 @@ CREATE INDEX idx_artists_name ON artists(name);
 -- ============================================
 CREATE TABLE track_artists (
     track_id VARCHAR(50) NOT NULL,
-    artist_id CHAR(36) NOT NULL,
+    artist_id VARCHAR(36) NOT NULL,
     position INT NOT NULL,
     
     PRIMARY KEY (track_id, artist_id),
@@ -111,13 +111,13 @@ CREATE INDEX idx_track_artists_artist ON track_artists(artist_id);
 -- 7. Chart Entries (Core table)
 -- ============================================
 CREATE TABLE chart_entries (
-    id CHAR(36) PRIMARY KEY,
-    playlist_id CHAR(36) NOT NULL,
+    id VARCHAR(36) PRIMARY KEY,
+    playlist_id VARCHAR(36) NOT NULL,
     track_id VARCHAR(50) NOT NULL,
-    week_id CHAR(36) NOT NULL,
+    week_id VARCHAR(36) NOT NULL,
     position INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by CHAR(36),
+    created_by VARCHAR(36),
     deleted_at TIMESTAMP NULL,
     
     FOREIGN KEY (playlist_id) REFERENCES playlists(id) ON DELETE CASCADE,
@@ -141,13 +141,13 @@ CREATE INDEX idx_chart_entries_deleted ON chart_entries(deleted_at);
 -- ============================================
 CREATE TABLE track_statistics (
     track_id VARCHAR(50) NOT NULL,
-    playlist_id CHAR(36) NOT NULL,
+    playlist_id VARCHAR(36) NOT NULL,
     total_appearances INT DEFAULT 0,
     highest_position INT,
     lowest_position INT,
     weeks_in_charts INT DEFAULT 0,
-    first_seen_week_id CHAR(36),
-    last_seen_week_id CHAR(36),
+    first_seen_week_id VARCHAR(36),
+    last_seen_week_id VARCHAR(36),
     average_position DECIMAL(5,2),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     

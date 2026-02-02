@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Week {
     @Id
-    @Column(length = 36, columnDefinition = "CHAR(36)")
+    @Column(length = 36)
     private String id;
 
     @Column(name = "week_year", nullable = false)
