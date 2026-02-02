@@ -1,0 +1,32 @@
+.chart-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+.chart-container h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.chart-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.chart-loading,
+.chart-error,
+.chart-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.chart-error {
+  color: #c33;
+  background-color: #fee;
+  border-radius: 8px;
+  border-left: 4px solid #c33;
+}

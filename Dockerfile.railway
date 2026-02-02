@@ -1,0 +1,65 @@
+# Multi-stage build for Railway
+# Railway will run this as a single service, so we need to combine frontend and backend
+
+# Stage 1: Build backend
+FROM maven:3.9-eclipse-temurin-17 AS backend-build
+WORKDIR /app/backend
+COPY backend/pom.xml .
+COPY backend/src ./src
+RUN mvn clean package -DskipTests
+
+# Stage 2: Build frontend
+FROM node:20-alpine AS frontend-build
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ .
+RUN npm run build
+
+# Stage 3: Final image with both backend and nginx
+FROM eclipse-temurin:17-jre
+
+# Install nginx and supervisor (using apt for Debian-based image)
+RUN apt-get update && \
+    apt-get install -y nginx supervisor && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy backend
+COPY --from=backend-build /app/backend/target/*.jar app.jar
+
+# Copy frontend
+COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
+
+# Copy nginx config (replace default nginx.conf since our config is complete)
+COPY nginx-railway.conf /etc/nginx/nginx.conf
+RUN rm -f /etc/nginx/sites-enabled/default
+
+# Create data directory (will be mounted as volume on Railway)
+RUN mkdir -p /app/data/Walter /app/data/Signe
+
+# Create supervisor config to run both services
+RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'nodaemon=true' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo '' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo '[program:backend]' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'command=java -jar /app/app.jar' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'stderr_logfile=/var/log/backend.err.log' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'stdout_logfile=/var/log/backend.out.log' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo '' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo '[program:nginx]' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'command=nginx -g "daemon off;"' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'stderr_logfile=/var/log/nginx.err.log' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'stdout_logfile=/var/log/nginx.out.log' >> /etc/supervisor/conf.d/supervisord.conf
+
+# Expose ports
+EXPOSE 8080 80
+
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

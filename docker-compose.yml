@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: top50-mysql
+    command: --log-bin-trust-function-creators=1
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: top50_charts
+      MYSQL_USER: top50
+      MYSQL_PASSWORD: top50password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: top50-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount data directory for import script
+      - ./data:/app/data:ro
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/top50_charts?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=top50
+      - SPRING_DATASOURCE_PASSWORD=top50password
+      - DATA_DIRECTORY=/app/data
+      - IMPORT_DATA=${IMPORT_DATA:-auto}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: top50-frontend
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mysql_data:

@@ -1,0 +1,14 @@
+node_modules
+target
+.git
+.vscode
+.idea
+*.iml
+.DS_Store
+*.md
+!README.md
+scripts/
+docker-compose.yml
+Dockerfile.backend
+Dockerfile.frontend
+nginx.conf

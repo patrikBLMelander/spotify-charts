@@ -1,0 +1,47 @@
+# Server Configuration
+server.port=8080
+
+# Database Configuration - SQLite (default)
+spring.datasource.url=jdbc:sqlite:./spotify_charts.db
+spring.datasource.driver-class-name=org.sqlite.JDBC
+spring.jpa.database-platform=org.hibernate.community.dialect.SQLiteDialect
+
+# JPA/Hibernate Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=true
+
+# Flyway Configuration (disabled by default - Hibernate creates schema automatically)
+# Uncomment to enable Flyway migrations
+# spring.flyway.enabled=true
+# spring.flyway.locations=classpath:db/migration
+
+# Spotify API Configuration
+# Get these from: https://developer.spotify.com/dashboard
+# 1. Log in with your Spotify account
+# 2. Click "Create app"
+# 3. Fill in app name and description
+# 4. Select "Web API" as API type
+# 5. Copy Client ID and Client Secret from your app
+# 
+# Replace the values below with your actual credentials:
+spotify.client-id=YOUR_CLIENT_ID_HERE
+spotify.client-secret=YOUR_CLIENT_SECRET_HERE
+
+# Alternative: Use environment variables instead (recommended for production)
+# Uncomment and set these in your environment:
+# spotify.client-id=${SPOTIFY_CLIENT_ID:}
+# spotify.client-secret=${SPOTIFY_CLIENT_SECRET:}
+
+# Logging
+logging.level.com.top50=INFO
+logging.level.org.springframework.web=INFO
+
+# Uncomment below to use PostgreSQL instead of SQLite
+# Note: When using PostgreSQL, Flyway is disabled and Hibernate ddl-auto creates the schema
+# spring.datasource.url=jdbc:postgresql://localhost:5432/spotify_charts
+# spring.datasource.username=postgres
+# spring.datasource.password=postgres
+# spring.datasource.driver-class-name=org.postgresql.Driver
+# spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+# spring.flyway.enabled=false
