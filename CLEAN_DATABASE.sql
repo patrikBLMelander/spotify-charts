@@ -1,5 +1,5 @@
--- Repair Flyway history and reset database in one step
--- This fixes the failed V2 migration issue by doing everything V2 was supposed to do
+-- Run this script manually in Railway's MySQL console to clean everything
+-- Then V1 will create tables with correct schema on next deployment
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -15,5 +15,5 @@ DROP TABLE IF EXISTS weeks;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Clean ALL Flyway history to allow V1 to run again with correct schema
+-- Clear ALL Flyway history
 DELETE FROM flyway_schema_history;

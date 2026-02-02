@@ -1,6 +1,6 @@
--- Drop all tables and reset Flyway history
--- This allows V1 to recreate tables with correct VARCHAR(36) types
--- This migration fixes the failed V2 migration issue
+-- Clean database and Flyway history to allow fresh start
+-- This migration runs BEFORE V1 to drop all tables and clear Flyway history
+-- After this runs, V1 will recreate everything with correct schema
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -16,6 +16,5 @@ DROP TABLE IF EXISTS weeks;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Clean ALL Flyway history to allow V1 to run again with correct schema
--- Note: This must be done after dropping tables to avoid foreign key issues
+-- Clear ALL Flyway history to allow V1 to run again
 DELETE FROM flyway_schema_history;

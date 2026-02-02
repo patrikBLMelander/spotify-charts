@@ -1,8 +1,8 @@
 -- Top 50 Charts Database Schema
--- Based on improved design with weeks table, soft deletes, and optimizations
+-- Clean schema with VARCHAR(36) for all ID columns to match Hibernate expectations
 
 -- ============================================
--- 1. Weeks Table (Improved design)
+-- 1. Weeks Table
 -- ============================================
 CREATE TABLE weeks (
     id VARCHAR(36) PRIMARY KEY,
@@ -159,16 +159,3 @@ CREATE TABLE track_statistics (
 );
 
 CREATE INDEX idx_track_statistics_playlist ON track_statistics(playlist_id);
-
--- ============================================
--- 9. Triggers for automatic updates
--- ============================================
-
--- Note: Triggers with complex logic require DELIMITER which Flyway doesn't support well
--- Statistics will be updated via application logic instead
--- Triggers can be added later via a separate migration if needed
-
--- Trigger to update track statistics when chart entry is deleted (soft delete)
--- Note: Simplified trigger without DELIMITER for Flyway compatibility
--- This trigger will be created in a separate migration file if needed
--- For now, statistics will be updated via application logic
