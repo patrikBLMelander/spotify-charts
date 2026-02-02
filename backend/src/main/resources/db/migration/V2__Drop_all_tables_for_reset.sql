@@ -1,4 +1,4 @@
--- Drop all tables and clean Flyway history to reset database
+-- Drop all tables and reset Flyway history
 -- This allows V1 to recreate tables with correct VARCHAR(36) types
 -- This migration fixes the failed V2 migration issue
 
@@ -14,7 +14,9 @@ DROP TABLE IF EXISTS playlists;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS weeks;
 
--- Clean Flyway history to remove failed migration records
-DELETE FROM flyway_schema_history WHERE version = '2';
-
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- Clean Flyway history to remove failed migration records
+-- Note: This must be done after dropping tables to avoid foreign key issues
+-- Remove only version 2 (failed migration), keep version 1 so V3 can run
+DELETE FROM flyway_schema_history WHERE version = '2';
