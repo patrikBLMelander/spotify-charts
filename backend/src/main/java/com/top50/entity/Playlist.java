@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Playlist {
     @Id
-    @Column(length = 36)
+    @Column(length = 36, columnDefinition = "CHAR(36)")
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
