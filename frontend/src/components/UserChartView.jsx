@@ -20,6 +20,9 @@ function UserChartView({ user, onWeekChange, onTracksLoaded }) {
   const [importing, setImporting] = useState(false)
   const [importError, setImportError] = useState(null)
   const [importSuccess, setImportSuccess] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteSuccess, setDeleteSuccess] = useState(false)
 
   useEffect(() => {
     loadWeeks()
@@ -84,6 +87,16 @@ function UserChartView({ user, onWeekChange, onTracksLoaded }) {
   useEffect(() => {
     loadTrackHistories()
   }, [selectedTracks, user])
+
+  // Cleanup timeout for delete success message
+  useEffect(() => {
+    if (deleteSuccess) {
+      const timer = setTimeout(() => {
+        setDeleteSuccess(false)
+      }, 3000)
+      return () => clearTimeout(timer) // Cleanup on unmount or when deleteSuccess changes
+    }
+  }, [deleteSuccess])
 
   const loadTrackHistories = async () => {
     if (selectedTracks.size === 0) {
@@ -198,6 +211,48 @@ function UserChartView({ user, onWeekChange, onTracksLoaded }) {
     }
   }
 
+  // Delete handler function
+  const handleDeleteWeek = async () => {
+    if (!selectedWeek) {
+      setError('Ingen vecka vald')
+      return
+    }
+
+    try {
+      setDeleting(true)
+      setError(null)
+
+      const response = await axios.delete(
+        `${API_BASE_URL}/import/week?week=${selectedWeek}&user=${user}`
+      )
+
+      // Reload weeks and clear current selection
+      await loadWeeks()
+      setSelectedWeek('')
+      setChartEntries([])
+      setDroppedTracks([])
+      setShowDeleteConfirm(false)
+      setDeleteSuccess(true)
+      setError(null)
+    } catch (err) {
+      console.error('Delete error:', err)
+      if (err.response?.data) {
+        const errorData = err.response.data
+        if (typeof errorData === 'string') {
+          setError(errorData)
+        } else if (errorData.message) {
+          setError(errorData.message)
+        } else {
+          setError('Fel vid radering: ' + JSON.stringify(errorData))
+        }
+      } else {
+        setError('Fel vid radering: ' + (err.message || 'Okänt fel'))
+      }
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   // Import handler function
   const handleImport = async () => {
     try {
@@ -265,6 +320,20 @@ function UserChartView({ user, onWeekChange, onTracksLoaded }) {
         </div>
       )}
 
+      {deleteSuccess && (
+        <div className="success-message" style={{ 
+          padding: '1rem', 
+          marginBottom: '1rem', 
+          backgroundColor: 'rgba(29, 185, 84, 0.1)', 
+          border: '1px solid rgba(29, 185, 84, 0.3)', 
+          borderRadius: '8px', 
+          color: '#1db954',
+          fontWeight: 600
+        }}>
+          ✓ Veckans data har raderats framgångsrikt
+        </div>
+      )}
+
       <div className="week-selector">
         <div className="week-navigation">
           <button
@@ -297,6 +366,17 @@ function UserChartView({ user, onWeekChange, onTracksLoaded }) {
             →
           </button>
         </div>
+        {selectedWeek && (
+          <button
+            className="delete-week-button"
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={deleting || loading}
+            type="button"
+            title="Ta bort denna veckas lista"
+          >
+            🗑️ Ta bort vecka
+          </button>
+        )}
       </div>
 
       {loading && !selectedWeek ? (
@@ -538,6 +618,55 @@ function UserChartView({ user, onWeekChange, onTracksLoaded }) {
           📥 Importera JSON-data
         </button>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="modal-overlay" onClick={() => setShowDeleteConfirm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Bekräfta radering</h2>
+              <button 
+                className="modal-close"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>
+                Är du säker på att du vill ta bort alla chart entries för vecka <strong>{selectedWeek}</strong> för användare <strong>{user}</strong>?
+              </p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '1rem' }}>
+                ⚠️ Detta kommer endast att påverka denna veckas data för denna användare. Andra veckor och andra användares data påverkas inte.
+              </p>
+              {error && (
+                <div className="import-error" style={{ marginTop: '1rem' }}>{error}</div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                className="import-submit-button"
+                onClick={handleDeleteWeek}
+                disabled={deleting}
+                style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
+              >
+                {deleting ? 'Raderar...' : 'Ja, ta bort'}
+              </button>
+              <button
+                className="import-cancel-button"
+                onClick={() => {
+                  setShowDeleteConfirm(false)
+                  setError(null)
+                }}
+                disabled={deleting}
+              >
+                Avbryt
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Import Modal */}
       {showImportModal && (

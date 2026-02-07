@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class ImportController {
     private final DataImportService dataImportService;
+    
+    private static final String WEEK_PATTERN = "\\d{4}-W\\d{2}";
 
     @PostMapping("/json")
     public ResponseEntity<?> importJsonData(
@@ -30,6 +32,38 @@ public class ImportController {
             }
             return ResponseEntity.status(500)
                     .body(new ImportResponse("Error importing data: " + errorMessage, null));
+        }
+    }
+    
+    @DeleteMapping("/week")
+    public ResponseEntity<?> deleteWeekData(
+            @RequestParam String week,
+            @RequestParam(required = false, defaultValue = "Walter") String user) {
+        // Input validation
+        if (week == null || week.isBlank()) {
+            return ResponseEntity.badRequest()
+                    .body(new ImportResponse("Week parameter is required", null));
+        }
+        
+        if (!week.matches(WEEK_PATTERN)) {
+            return ResponseEntity.badRequest()
+                    .body(new ImportResponse("Invalid week format. Expected YYYY-Www (e.g., 2026-W05)", null));
+        }
+        
+        if (user == null || user.isBlank()) {
+            return ResponseEntity.badRequest()
+                    .body(new ImportResponse("User parameter is required", null));
+        }
+        
+        try {
+            log.info("Deleting chart entries for user: {}, week: {}", user, week);
+            dataImportService.deleteChartEntriesForWeek(week, user);
+            return ResponseEntity.ok().body(new ImportResponse("Chart entries deleted successfully", week));
+        } catch (Exception e) {
+            // Exceptions are now handled by GlobalExceptionHandler
+            // This catch is for any unexpected exceptions
+            log.error("Unexpected error deleting chart entries for user: {}, week: {}", user, week, e);
+            throw e; // Re-throw to let GlobalExceptionHandler handle it
         }
     }
     

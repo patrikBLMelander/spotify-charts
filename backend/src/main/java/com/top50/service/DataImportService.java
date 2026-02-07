@@ -3,6 +3,7 @@ package com.top50.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.top50.entity.*;
+import com.top50.exception.*;
 import com.top50.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +103,10 @@ public class DataImportService implements CommandLineRunner {
         Playlist playlist = getOrCreatePlaylist(user);
         Week week = weekService.getOrCreateWeek(request.getWeek());
         
+        // First, remove all existing entries for this week (including soft-deleted) to avoid duplicates
+        // This allows re-importing the same week with updated data after deletion
+        removeAllEntriesForWeek(playlist, week);
+        
         // Import entries - each entry in its own transaction to isolate failures
         int successCount = 0;
         for (com.top50.dto.JsonImportRequest.ChartEntry entry : request.getEntries()) {
@@ -117,6 +122,23 @@ public class DataImportService implements CommandLineRunner {
         
         log.info("Successfully imported {} entries for week {} (attempted {})", 
             successCount, request.getWeek(), request.getEntries().size());
+    }
+    
+    @Transactional
+    private void removeAllEntriesForWeek(Playlist playlist, Week week) {
+        // Get all entries for this week (including soft-deleted ones)
+        // We need to hard-delete them all because unique constraint includes soft-deleted entries
+        List<ChartEntry> allEntries = chartEntryRepository.findByPlaylistAndWeek(playlist, week);
+        
+        if (!allEntries.isEmpty()) {
+            log.info("Removing {} existing entries (including soft-deleted) for week {} before re-import", 
+                allEntries.size(), week.getIsoFormat());
+            
+            // Hard delete all entries (including soft-deleted) to avoid unique constraint conflicts
+            // This allows clean re-import of the same week, even after it was deleted
+            chartEntryRepository.deleteAll(allEntries);
+            chartEntryRepository.flush();
+        }
     }
     
     @Transactional
@@ -184,17 +206,35 @@ public class DataImportService implements CommandLineRunner {
             }
             
             // Get or create chart entry first (before linking artists to avoid cascade conflicts)
-            ChartEntry chartEntry = chartEntryRepository
-                .findByPlaylistAndTrackAndWeekAndDeletedAtIsNull(playlist, track, week)
-                .orElseGet(() -> {
-                    ChartEntry newEntry = new ChartEntry();
-                    newEntry.setId(UUID.randomUUID().toString());
-                    newEntry.setPlaylist(playlist);
-                    newEntry.setTrack(track);
-                    newEntry.setWeek(week);
-                    newEntry.setCreatedAt(LocalDateTime.now());
-                    return newEntry;
-                });
+            // Check for existing entry (including soft-deleted ones due to unique constraint)
+            Optional<ChartEntry> existingEntry = chartEntryRepository
+                .findByPlaylistAndTrackAndWeekAndDeletedAtIsNull(playlist, track, week);
+            
+            ChartEntry chartEntry;
+            if (existingEntry.isPresent()) {
+                // Entry exists and is not deleted - update it
+                chartEntry = existingEntry.get();
+            } else {
+                // Check if there's a soft-deleted entry (unique constraint prevents new entry)
+                List<ChartEntry> allEntries = chartEntryRepository.findByPlaylistAndWeek(playlist, week)
+                    .stream()
+                    .filter(ce -> ce.getTrack().getId().equals(track.getId()))
+                    .toList();
+                
+                if (!allEntries.isEmpty()) {
+                    // Found soft-deleted entry - restore it
+                    chartEntry = allEntries.get(0);
+                    chartEntry.setDeletedAt(null); // Restore by clearing deletedAt
+                } else {
+                    // No entry exists - create new one
+                    chartEntry = new ChartEntry();
+                    chartEntry.setId(UUID.randomUUID().toString());
+                    chartEntry.setPlaylist(playlist);
+                    chartEntry.setTrack(track);
+                    chartEntry.setWeek(week);
+                    chartEntry.setCreatedAt(LocalDateTime.now());
+                }
+            }
             
             chartEntry.setPosition(position);
             chartEntryRepository.save(chartEntry);
@@ -456,6 +496,58 @@ public class DataImportService implements CommandLineRunner {
         } catch (Exception e) {
             log.warn("Failed to link artist {} to track {}: {}", artist != null ? artist.getName() : "null", track != null ? track.getId() : "null", e.getMessage());
             // Don't throw - continue with import
+        }
+    }
+    
+    @Transactional
+    public void deleteChartEntriesForWeek(String weekIso, String username) {
+        log.info("Deleting chart entries for user: {}, week: {}", username, weekIso);
+        
+        User user = userRepository.findByUsernameAndDeletedAtIsNull(username)
+            .orElseThrow(() -> new UserNotFoundException(username));
+        
+        List<Playlist> playlists = playlistRepository.findByUserAndDeletedAtIsNull(user);
+        if (playlists.isEmpty()) {
+            throw new PlaylistNotFoundException(username);
+        }
+        
+        Playlist playlist = playlists.get(0);
+        Week week = weekService.findByIsoFormat(weekIso)
+            .orElseThrow(() -> new WeekNotFoundException(weekIso));
+        
+        // Use soft delete for consistency with deletedAt pattern
+        // Get only non-deleted entries
+        List<ChartEntry> entries = chartEntryRepository.findByPlaylistAndWeekNotDeleted(playlist, week);
+        
+        if (entries.isEmpty()) {
+            log.info("No chart entries found for user: {}, week: {}", username, weekIso);
+            return;
+        }
+        
+        log.info("Soft deleting {} chart entries for user: {}, week: {}", entries.size(), username, weekIso);
+        
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            entries.forEach(entry -> entry.setDeletedAt(now));
+            chartEntryRepository.saveAll(entries);
+            chartEntryRepository.flush();
+            
+            // Verify deletion
+            long remainingCount = chartEntryRepository.findByPlaylistAndWeekNotDeleted(playlist, week).size();
+            
+            if (remainingCount > 0) {
+                log.warn("Not all entries were deleted. Expected 0, found {} remaining", remainingCount);
+                throw new DataDeletionException("Failed to delete all chart entries. " + remainingCount + " entries remain.");
+            }
+            
+            log.info("Successfully soft deleted {} chart entries for user: {}, week: {}", 
+                    entries.size(), username, weekIso);
+        } catch (Exception e) {
+            log.error("Failed to delete chart entries for user: {}, week: {}", username, weekIso, e);
+            if (e instanceof DataDeletionException) {
+                throw e;
+            }
+            throw new DataDeletionException("Failed to delete chart entries: " + e.getMessage(), e);
         }
     }
     

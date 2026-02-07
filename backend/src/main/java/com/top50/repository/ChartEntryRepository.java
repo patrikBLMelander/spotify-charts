@@ -29,4 +29,10 @@ public interface ChartEntryRepository extends JpaRepository<ChartEntry, String> 
     
     @Query("SELECT ce FROM ChartEntry ce WHERE ce.playlist = :playlist AND ce.week.startDate < :currentWeekStart AND ce.track = :track AND ce.deletedAt IS NULL ORDER BY ce.week.startDate DESC")
     List<ChartEntry> findPreviousEntry(@Param("playlist") Playlist playlist, @Param("track") Track track, @Param("currentWeekStart") java.time.LocalDate currentWeekStart);
+    
+    @Query("SELECT ce FROM ChartEntry ce WHERE ce.playlist = :playlist AND ce.week = :week")
+    List<ChartEntry> findByPlaylistAndWeek(@Param("playlist") Playlist playlist, @Param("week") Week week);
+    
+    @Query("SELECT ce FROM ChartEntry ce WHERE ce.playlist = :playlist AND ce.week = :week AND ce.deletedAt IS NULL")
+    List<ChartEntry> findByPlaylistAndWeekNotDeleted(@Param("playlist") Playlist playlist, @Param("week") Week week);
 }

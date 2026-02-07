@@ -4,6 +4,7 @@ import com.top50.dto.ChartEntryDto;
 import com.top50.dto.TrackDto;
 import com.top50.dto.TrackHistoryDto;
 import com.top50.entity.*;
+import com.top50.exception.*;
 import com.top50.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,7 @@ public class DatabaseChartService {
     @Transactional(readOnly = true)
     public List<ChartEntryDto> getChartByWeek(String weekIso, String username) {
         User user = userRepository.findByUsernameAndDeletedAtIsNull(username)
-            .orElseThrow(() -> new RuntimeException("User not found: " + username));
+            .orElseThrow(() -> new UserNotFoundException(username));
         
         List<Playlist> playlists = playlistRepository.findByUserAndDeletedAtIsNull(user);
         if (playlists.isEmpty()) {
@@ -65,9 +66,24 @@ public class DatabaseChartService {
         
         Playlist playlist = playlists.get(0);
         Week week = weekService.findByIsoFormat(weekIso)
-            .orElseThrow(() -> new RuntimeException("Week not found: " + weekIso));
+            .orElseThrow(() -> new WeekNotFoundException(weekIso));
         
         List<ChartEntry> entries = chartEntryRepository.findByPlaylistAndWeekOrderByPosition(playlist, week);
+        
+        // Find the directly previous week (optimized: use week startDate for lookup)
+        // Weeks are sorted DESC by startDate, so we find the week with startDate just before current
+        Week previousWeek = findPreviousWeek(playlist, week);
+        
+        // Get all tracks from previous week for quick lookup
+        Set<String> previousWeekTrackIds = new HashSet<>();
+        Map<String, Integer> previousWeekPositions = new HashMap<>();
+        if (previousWeek != null) {
+            List<ChartEntry> previousEntries = chartEntryRepository.findByPlaylistAndWeekOrderByPosition(playlist, previousWeek);
+            for (ChartEntry prevEntry : previousEntries) {
+                previousWeekTrackIds.add(prevEntry.getTrack().getId());
+                previousWeekPositions.put(prevEntry.getTrack().getId(), prevEntry.getPosition());
+            }
+        }
         
         return entries.stream().map(entry -> {
             ChartEntryDto dto = new ChartEntryDto();
@@ -90,13 +106,12 @@ public class DatabaseChartService {
             
             dto.setTrack(trackDto);
             
-            // Find previous position
-            List<ChartEntry> previousEntries = chartEntryRepository.findPreviousEntry(
-                playlist, track, week.getStartDate()
-            );
-            if (!previousEntries.isEmpty()) {
-                dto.setPreviousPosition(previousEntries.get(0).getPosition());
+            // Only set previous position if track was in the directly previous week
+            // If track was not in previous week (even if it was in an earlier week), it's a new entry
+            if (previousWeek != null && previousWeekTrackIds.contains(track.getId())) {
+                dto.setPreviousPosition(previousWeekPositions.get(track.getId()));
             }
+            // Otherwise, previousPosition remains null (new entry)
             
             return dto;
         }).collect(Collectors.toList());
@@ -105,7 +120,7 @@ public class DatabaseChartService {
     @Transactional(readOnly = true)
     public TrackHistoryDto getTrackHistory(String trackId, String username) {
         User user = userRepository.findByUsernameAndDeletedAtIsNull(username)
-            .orElseThrow(() -> new RuntimeException("User not found: " + username));
+            .orElseThrow(() -> new UserNotFoundException(username));
         
         Track track = trackRepository.findByIdAndDeletedAtIsNull(trackId)
             .orElseThrow(() -> new RuntimeException("Track not found: " + trackId));
@@ -137,7 +152,7 @@ public class DatabaseChartService {
     @Transactional(readOnly = true)
     public List<ChartEntryDto> getDroppedTracks(String weekIso, String username) {
         User user = userRepository.findByUsernameAndDeletedAtIsNull(username)
-            .orElseThrow(() -> new RuntimeException("User not found: " + username));
+            .orElseThrow(() -> new UserNotFoundException(username));
         
         List<Playlist> playlists = playlistRepository.findByUserAndDeletedAtIsNull(user);
         if (playlists.isEmpty()) {
@@ -146,17 +161,10 @@ public class DatabaseChartService {
         
         Playlist playlist = playlists.get(0);
         Week currentWeek = weekService.findByIsoFormat(weekIso)
-            .orElseThrow(() -> new RuntimeException("Week not found: " + weekIso));
+            .orElseThrow(() -> new WeekNotFoundException(weekIso));
         
-        // Find previous week
-        List<Week> allWeeks = chartEntryRepository.findDistinctWeeksByPlaylist(playlist);
-        Week previousWeek = null;
-        for (int i = 0; i < allWeeks.size(); i++) {
-            if (allWeeks.get(i).getId().equals(currentWeek.getId()) && i < allWeeks.size() - 1) {
-                previousWeek = allWeeks.get(i + 1);
-                break;
-            }
-        }
+        // Find previous week using optimized method
+        Week previousWeek = findPreviousWeek(playlist, currentWeek);
         
         if (previousWeek == null) {
             return Collections.emptyList();
@@ -166,14 +174,56 @@ public class DatabaseChartService {
         final Week finalPreviousWeek = previousWeek; // Make final for lambda
         List<ChartEntry> previousEntries = chartEntryRepository.findByPlaylistAndWeekOrderByPosition(playlist, finalPreviousWeek);
         
-        // Filter out tracks that are still in current week
-        Set<String> currentTrackIds = chartEntryRepository.findByPlaylistAndWeekOrderByPosition(playlist, currentWeek)
-            .stream()
+        // Get all current week entries with their tracks and artists for comparison
+        List<ChartEntry> currentEntries = chartEntryRepository.findByPlaylistAndWeekOrderByPosition(playlist, currentWeek);
+        
+        // Create a set of current track IDs for fast lookup
+        Set<String> currentTrackIds = currentEntries.stream()
             .map(ce -> ce.getTrack().getId())
             .collect(Collectors.toSet());
         
+        // Create a map of current tracks by normalized title to all artist sets for fuzzy matching
+        // Multiple tracks can have the same title, so we need to check all of them
+        Map<String, List<Set<String>>> currentTracksByTitleAndArtists = currentEntries.stream()
+            .collect(Collectors.groupingBy(
+                entry -> normalizeTitle(entry.getTrack().getTitle()),
+                Collectors.mapping(
+                    entry -> getArtistNames(entry.getTrack()),
+                    Collectors.toList()
+                )
+            ));
+        
         return previousEntries.stream()
-            .filter(entry -> !currentTrackIds.contains(entry.getTrack().getId()))
+            .filter(entry -> {
+                String trackId = entry.getTrack().getId();
+                
+                // First check: exact track ID match (fast path)
+                if (currentTrackIds.contains(trackId)) {
+                    return false; // Track is still in current week
+                }
+                
+                // Second check: fuzzy match - same title and at least one common artist
+                String normalizedTitle = normalizeTitle(entry.getTrack().getTitle());
+                Set<String> previousArtists = getArtistNames(entry.getTrack());
+                
+                List<Set<String>> currentArtistsList = currentTracksByTitleAndArtists.get(normalizedTitle);
+                if (currentArtistsList != null) {
+                    // Check all tracks with the same title to see if any share at least one artist
+                    boolean hasCommonArtist = currentArtistsList.stream()
+                        .anyMatch(currentArtists -> previousArtists.stream()
+                            .anyMatch(currentArtists::contains));
+                    
+                    if (hasCommonArtist) {
+                        // Same song (different version) is still in current week, don't show as dropped
+                        log.debug("Track '{}' (ID: {}) has a different version in current week, not showing as dropped", 
+                            entry.getTrack().getTitle(), trackId);
+                        return false;
+                    }
+                }
+                
+                // Track is truly dropped
+                return true;
+            })
             .map(entry -> {
                 ChartEntryDto dto = new ChartEntryDto();
                 dto.setWeek(finalPreviousWeek.getIsoFormat());
@@ -184,10 +234,30 @@ public class DatabaseChartService {
             .collect(Collectors.toList());
     }
     
+    /**
+     * Normalize track title for comparison (lowercase, trim, remove extra spaces)
+     */
+    private String normalizeTitle(String title) {
+        if (title == null) {
+            return "";
+        }
+        return title.toLowerCase().trim().replaceAll("\\s+", " ");
+    }
+    
+    /**
+     * Get normalized artist names from a track
+     */
+    private Set<String> getArtistNames(Track track) {
+        return track.getArtists().stream()
+            .sorted(Comparator.comparing(TrackArtist::getPosition))
+            .map(ta -> ta.getArtist().getName().toLowerCase().trim())
+            .collect(Collectors.toSet());
+    }
+    
     @Transactional(readOnly = true)
     public List<TrackDto> getAllTracks(String username) {
         User user = userRepository.findByUsernameAndDeletedAtIsNull(username)
-            .orElseThrow(() -> new RuntimeException("User not found: " + username));
+            .orElseThrow(() -> new UserNotFoundException(username));
         
         List<Playlist> playlists = playlistRepository.findByUserAndDeletedAtIsNull(user);
         if (playlists.isEmpty()) {
@@ -228,5 +298,26 @@ public class DatabaseChartService {
         dto.setArtists(artistNames);
         
         return dto;
+    }
+    
+    /**
+     * Find the directly previous week for a given playlist and week.
+     * Optimized to avoid loading all weeks when we only need the previous one.
+     * 
+     * @param playlist The playlist to search in
+     * @param currentWeek The current week to find the previous week for
+     * @return The previous week, or null if no previous week exists
+     */
+    private Week findPreviousWeek(Playlist playlist, Week currentWeek) {
+        // Get all weeks sorted by startDate DESC (newest first)
+        List<Week> allWeeks = chartEntryRepository.findDistinctWeeksByPlaylist(playlist);
+        
+        // Find current week index and get the next one (which is the previous chronologically)
+        for (int i = 0; i < allWeeks.size(); i++) {
+            if (allWeeks.get(i).getId().equals(currentWeek.getId()) && i < allWeeks.size() - 1) {
+                return allWeeks.get(i + 1);
+            }
+        }
+        return null;
     }
 }
