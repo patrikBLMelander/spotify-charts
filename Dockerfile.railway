@@ -27,6 +27,11 @@ RUN apt-get update && \
 
 WORKDIR /app
 
+# JVM options for the backend. Overridable so a resting deployment can cap heap
+# (and therefore billed memory) from Railway, e.g.
+# JAVA_OPTS="-Xms64m -Xmx256m -XX:+UseSerialGC". Empty = JVM defaults.
+ENV JAVA_OPTS=""
+
 # Copy backend
 COPY --from=backend-build /app/backend/target/*.jar app.jar
 
@@ -37,15 +42,17 @@ COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 COPY nginx-railway.conf /etc/nginx/nginx.conf
 RUN rm -f /etc/nginx/sites-enabled/default
 
-# Create data directory (will be mounted as volume on Railway)
-RUN mkdir -p /app/data/Walter /app/data/Signe
+# Bake the chart JSON into the image (no database, no volume needed).
+# Update the charts by editing files under data/ and pushing — Railway rebuilds.
+COPY data /app/data
+ENV DATA_DIRECTORY=/app/data
 
 # Create supervisor config to run both services
 RUN echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf && \
     echo 'nodaemon=true' >> /etc/supervisor/conf.d/supervisord.conf && \
     echo '' >> /etc/supervisor/conf.d/supervisord.conf && \
     echo '[program:backend]' >> /etc/supervisor/conf.d/supervisord.conf && \
-    echo 'command=java -jar /app/app.jar' >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo 'command=sh -c "exec java $JAVA_OPTS -jar /app/app.jar"' >> /etc/supervisor/conf.d/supervisord.conf && \
     echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf && \
     echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf && \
     echo 'stderr_logfile=/dev/stderr' >> /etc/supervisor/conf.d/supervisord.conf && \

@@ -15,9 +15,9 @@ SPRING_DATASOURCE_PASSWORD=${{MYSQL_ROOT_PASSWORD}}
 Eller om du vill använda de specifika värdena direkt:
 
 ```
-SPRING_DATASOURCE_URL=jdbc:mysql://root:JVqmzqvHwpSUAzhXBhOmzdNKNOIaKnNe@${{RAILWAY_PRIVATE_DOMAIN}}:3306/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+SPRING_DATASOURCE_URL=jdbc:mysql://root:<YOUR_DB_PASSWORD>@${{RAILWAY_PRIVATE_DOMAIN}}:3306/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 SPRING_DATASOURCE_USERNAME=root
-SPRING_DATASOURCE_PASSWORD=JVqmzqvHwpSUAzhXBhOmzdNKNOIaKnNe
+SPRING_DATASOURCE_PASSWORD=<YOUR_DB_PASSWORD>
 ```
 
 ## Optional Variables

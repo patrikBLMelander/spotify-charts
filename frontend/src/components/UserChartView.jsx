@@ -366,17 +366,6 @@ function UserChartView({ user, onWeekChange, onTracksLoaded }) {
             →
           </button>
         </div>
-        {selectedWeek && (
-          <button
-            className="delete-week-button"
-            onClick={() => setShowDeleteConfirm(true)}
-            disabled={deleting || loading}
-            type="button"
-            title="Ta bort denna veckas lista"
-          >
-            🗑️ Ta bort vecka
-          </button>
-        )}
       </div>
 
       {loading && !selectedWeek ? (
@@ -609,122 +598,8 @@ function UserChartView({ user, onWeekChange, onTracksLoaded }) {
         </div>
       )}
 
-      {/* Import Button */}
-      <div className="import-section">
-        <button 
-          className="import-button"
-          onClick={() => setShowImportModal(true)}
-        >
-          📥 Importera JSON-data
-        </button>
-      </div>
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="modal-overlay" onClick={() => setShowDeleteConfirm(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Bekräfta radering</h2>
-              <button 
-                className="modal-close"
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={deleting}
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <p>
-                Är du säker på att du vill ta bort alla chart entries för vecka <strong>{selectedWeek}</strong> för användare <strong>{user}</strong>?
-              </p>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '1rem' }}>
-                ⚠️ Detta kommer endast att påverka denna veckas data för denna användare. Andra veckor och andra användares data påverkas inte.
-              </p>
-              {error && (
-                <div className="import-error" style={{ marginTop: '1rem' }}>{error}</div>
-              )}
-            </div>
-            <div className="modal-footer">
-              <button
-                className="import-submit-button"
-                onClick={handleDeleteWeek}
-                disabled={deleting}
-                style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
-              >
-                {deleting ? 'Raderar...' : 'Ja, ta bort'}
-              </button>
-              <button
-                className="import-cancel-button"
-                onClick={() => {
-                  setShowDeleteConfirm(false)
-                  setError(null)
-                }}
-                disabled={deleting}
-              >
-                Avbryt
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Import Modal */}
-      {showImportModal && (
-        <div className="modal-overlay" onClick={() => setShowImportModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Importera JSON-data</h2>
-              <button 
-                className="modal-close"
-                onClick={() => {
-                  setShowImportModal(false)
-                  setImportJson('')
-                  setImportError(null)
-                  setImportSuccess(false)
-                }}
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <p>Klistra in JSON-data med samma struktur som befintliga filer:</p>
-              <textarea
-                className="import-textarea"
-                value={importJson}
-                onChange={(e) => setImportJson(e.target.value)}
-                placeholder={`{\n  "week": "2026-W06",\n  "entries": [\n    {\n      "placement": 1,\n      "track_id": "...",\n      "title": "...",\n      "artists": ["..."],\n      "spotify_url": "...",\n      "image_url": "..."\n    }\n  ]\n}`}
-                rows={15}
-              />
-              {importError && (
-                <div className="import-error">{importError}</div>
-              )}
-              {importSuccess && (
-                <div className="import-success">Data importerad framgångsrikt!</div>
-              )}
-            </div>
-            <div className="modal-footer">
-              <button
-                className="import-submit-button"
-                onClick={handleImport}
-                disabled={importing || !importJson.trim()}
-              >
-                {importing ? 'Importerar...' : 'Importera'}
-              </button>
-              <button
-                className="import-cancel-button"
-                onClick={() => {
-                  setShowImportModal(false)
-                  setImportJson('')
-                  setImportError(null)
-                  setImportSuccess(false)
-                }}
-              >
-                Avbryt
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Admin import/delete UI removed: charts are managed as JSON files in
+          data/{user}/ and updated via git push (no database, no API writes). */}
     </div>
   )
 }

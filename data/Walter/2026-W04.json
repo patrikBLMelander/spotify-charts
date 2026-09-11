@@ -8,7 +8,8 @@
       "artists": [
         "Bruno Mars"
       ],
-      "spotify_url": "https://open.spotify.com/track/0KKkJNfGyhkQ5aFogxQAPU"
+      "spotify_url": "https://open.spotify.com/track/0KKkJNfGyhkQ5aFogxQAPU",
+      "image_url": "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02232711f7d66a1e19e89e28c5"
     },
     {
       "placement": 2,
@@ -17,7 +18,8 @@
       "artists": [
         "Central Cee"
       ],
-      "spotify_url": "https://open.spotify.com/track/3LtpKP5abr2qqjunvjlX5i"
+      "spotify_url": "https://open.spotify.com/track/3LtpKP5abr2qqjunvjlX5i",
+      "image_url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e0291de4cb28d9066225b55e603"
     },
     {
       "placement": 3,
@@ -46,7 +48,8 @@
       "artists": [
         "Aditya Rikhari"
       ],
-      "spotify_url": "https://open.spotify.com/track/0eLtIxPRNJfsmehITZ1qaJ"
+      "spotify_url": "https://open.spotify.com/track/0eLtIxPRNJfsmehITZ1qaJ",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/cdn-images.dzcdn.net/a0d72a97993078721ed86edeedbab5a84c724eea.jpg"
     },
     {
       "placement": 6,
@@ -66,7 +69,9 @@
       "artists": [
         "DJ Japa NK",
         "MC Meno K",
-        "MC Ryan SP"
+        "MC Ryan SP",
+        "Mc Jacaré",
+        "DJ DAVI DOGDOG"
       ],
       "spotify_url": "https://open.spotify.com/track/4G7bbgD2DHORU4frrWoCXp",
       "image_url": "https://kimi-web-img.moonshot.cn/img/i.scdn.co/8d2d5f8c8658ab541b0ce496f7e451e1cb7ecbe5"
@@ -78,7 +83,8 @@
       "artists": [
         "The Weeknd"
       ],
-      "spotify_url": "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b"
+      "spotify_url": "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/i.discogs.com/e85a526d8ef84e97c336e243660a21e9b304cc86.jpeg"
     },
     {
       "placement": 9,
@@ -87,7 +93,8 @@
       "artists": [
         "sombr"
       ],
-      "spotify_url": "https://open.spotify.com/track/0TFTAtCYhp2tQ9KcJIZb55"
+      "spotify_url": "https://open.spotify.com/track/0TFTAtCYhp2tQ9KcJIZb55",
+      "image_url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e024229702de91cb3d3a4383302"
     },
     {
       "placement": 10,
@@ -108,7 +115,8 @@
         "LE SSERAFIM",
         "j-hope"
       ],
-      "spotify_url": "https://open.spotify.com/track/2N9miXnewVmUrgl6JSK1FI"
+      "spotify_url": "https://open.spotify.com/track/2N9miXnewVmUrgl6JSK1FI",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/shop.le-sserafim.us/64d3c9e9910504d47fb46a60b66846783b2bcbdb.jpg"
     },
     {
       "placement": 12,
@@ -119,7 +127,8 @@
         "JENNIE",
         "Lily-Rose Depp"
       ],
-      "spotify_url": "https://open.spotify.com/track/7CyPwkp0oE8Ro9Dd5CUDjW"
+      "spotify_url": "https://open.spotify.com/track/7CyPwkp0oE8Ro9Dd5CUDjW",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/topmusicarts.com/7b417a50717972257f5a291f20235ee1109f6034.png"
     },
     {
       "placement": 13,
@@ -128,7 +137,8 @@
       "artists": [
         "Ed Sheeran"
       ],
-      "spotify_url": "https://open.spotify.com/track/3hj8W5q7BI1Uam1rn47a9Q"
+      "spotify_url": "https://open.spotify.com/track/3hj8W5q7BI1Uam1rn47a9Q",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/i.scdn.co/b2c7525786c4e415aefd43c040e27a66b7a7467c"
     },
     {
       "placement": 14,
@@ -137,7 +147,8 @@
       "artists": [
         "Arctic Monkeys"
       ],
-      "spotify_url": "https://open.spotify.com/track/5XeFesFbtLpXzIVDNQP22n"
+      "spotify_url": "https://open.spotify.com/track/5XeFesFbtLpXzIVDNQP22n",
+      "image_url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e024ae1c4c5c45aabe565499163"
     },
     {
       "placement": 15,
@@ -146,7 +157,8 @@
       "artists": [
         "Bruno Mars"
       ],
-      "spotify_url": "https://open.spotify.com/track/12bYYQaLqHliSXvRIYlq8G"
+      "spotify_url": "https://open.spotify.com/track/12bYYQaLqHliSXvRIYlq8G",
+      "image_url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02e7623a0a60f330ee2b24d498"
     },
     {
       "placement": 16,
@@ -155,7 +167,8 @@
       "artists": [
         "Black Eyed Peas"
       ],
-      "spotify_url": "https://open.spotify.com/track/2WQ09wqQBIOor7Q0VpIDBK"
+      "spotify_url": "https://open.spotify.com/track/2WQ09wqQBIOor7Q0VpIDBK",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/img.discogs.com/186e9b0b7fa0c801263f0dacddb14c523de8c285.jpg"
     },
     {
       "placement": 17,
@@ -165,7 +178,8 @@
         "Pharrell Williams",
         "Travis Scott"
       ],
-      "spotify_url": "https://open.spotify.com/track/5unjCay0kUjuej5ebn4nS4"
+      "spotify_url": "https://open.spotify.com/track/5unjCay0kUjuej5ebn4nS4",
+      "image_url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e029c3bd14ef94886822d576396"
     },
     {
       "placement": 18,
@@ -194,7 +208,8 @@
       "artists": [
         "RAYE"
       ],
-      "spotify_url": "https://open.spotify.com/track/55lijDD6OAjLFFUHU9tcDm"
+      "spotify_url": "https://open.spotify.com/track/55lijDD6OAjLFFUHU9tcDm",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/images.genius.com/189824b7d20dd8f883497a24080aa6a6bbdf9e8b.jpg"
     },
     {
       "placement": 21,
@@ -204,7 +219,8 @@
         "HAVEN",
         "Kaitlin Aragon"
       ],
-      "spotify_url": "https://open.spotify.com/track/1WwQ714xuznu44tEnkem2g"
+      "spotify_url": "https://open.spotify.com/track/1WwQ714xuznu44tEnkem2g",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/is1-ssl.mzstatic.com/9b4b4703714529471b4497376b1de8d237621f91.jpg"
     },
     {
       "placement": 22,
@@ -225,7 +241,8 @@
         "Lazare",
         "ADAM (BE)"
       ],
-      "spotify_url": "https://open.spotify.com/track/7qrnsZLQIjYljtyWUkmZNa"
+      "spotify_url": "https://open.spotify.com/track/7qrnsZLQIjYljtyWUkmZNa",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/is1-ssl.mzstatic.com/eb0c6b44f37ef026a25237b840857d059b93d676.jpg"
     },
     {
       "placement": 24,
@@ -233,9 +250,13 @@
       "title": "Chains & Whips",
       "artists": [
         "Clipse",
-        "Kendrick Lamar"
+        "Kendrick Lamar",
+        "Pharrell Williams",
+        "Pusha T",
+        "Malice"
       ],
-      "spotify_url": "https://open.spotify.com/track/3znSvEwBq09We4cxxmwlZM"
+      "spotify_url": "https://open.spotify.com/track/3znSvEwBq09We4cxxmwlZM",
+      "image_url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02ef854fe1d04279372a96f3d6"
     },
     {
       "placement": 25,
@@ -244,7 +265,8 @@
       "artists": [
         "Tame Impala"
       ],
-      "spotify_url": "https://open.spotify.com/track/1NXbNEAcPvY5G1xvfN57aA"
+      "spotify_url": "https://open.spotify.com/track/1NXbNEAcPvY5G1xvfN57aA",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/is1-ssl.mzstatic.com/c7f436a5ef099202fac978aecfa23b5fe6e38d3e.jpg"
     },
     {
       "placement": 26,
@@ -263,7 +285,8 @@
       "artists": [
         "Zara Larsson"
       ],
-      "spotify_url": "https://open.spotify.com/track/1rIKgCH4H52lrvDcz50hS8"
+      "spotify_url": "https://open.spotify.com/track/1rIKgCH4H52lrvDcz50hS8",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/upload.wikimedia.org/b89841e2a1dc41f815fbdabbb00afbf8573ce930.png"
     },
     {
       "placement": 28,
@@ -272,7 +295,8 @@
       "artists": [
         "Empire Of The Sun"
       ],
-      "spotify_url": "https://open.spotify.com/track/5r5cp9IpziiIsR6b93vcnQ"
+      "spotify_url": "https://open.spotify.com/track/5r5cp9IpziiIsR6b93vcnQ",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/i.scdn.co/f401bdbd76acb1256f1f6670c4087d9eec9c948a"
     },
     {
       "placement": 29,
@@ -281,7 +305,8 @@
       "artists": [
         "Linkin Park"
       ],
-      "spotify_url": "https://open.spotify.com/track/60a0Rd6pjrkxjPbaKzXjfq"
+      "spotify_url": "https://open.spotify.com/track/60a0Rd6pjrkxjPbaKzXjfq",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/i.discogs.com/981b39334beb655f59aab910107b856668fc87ae.jpeg"
     },
     {
       "placement": 30,
@@ -290,7 +315,8 @@
       "artists": [
         "FELICIA"
       ],
-      "spotify_url": "https://open.spotify.com/track/39AmM0jZSFAo7MBxIYoMN8"
+      "spotify_url": "https://open.spotify.com/track/39AmM0jZSFAo7MBxIYoMN8",
+      "image_url": "https://i.scdn.co/image/ab67616d00001e026d3a1c978b9d2ceb7e3b90ac"
     },
     {
       "placement": 31,
@@ -300,7 +326,8 @@
         "El Alfa",
         "Nfasis"
       ],
-      "spotify_url": "https://open.spotify.com/track/0GfWTZZOc7co6oVqyQ556l"
+      "spotify_url": "https://open.spotify.com/track/0GfWTZZOc7co6oVqyQ556l",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/is1-ssl.mzstatic.com/1441ab7eb3ea52001307362704a8afc968b2afcf.jpg"
     },
     {
       "placement": 32,
@@ -310,7 +337,8 @@
         "Dave",
         "Central Cee"
       ],
-      "spotify_url": "https://open.spotify.com/track/6NYbDTmstd7JSUWl2hVBqR"
+      "spotify_url": "https://open.spotify.com/track/6NYbDTmstd7JSUWl2hVBqR",
+      "image_url": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e02dd9f1f94f2f9a10310a3d525"
     },
     {
       "placement": 33,
@@ -319,7 +347,8 @@
       "artists": [
         "Stray Kids"
       ],
-      "spotify_url": "https://open.spotify.com/track/1KuNhOubescxn3xD6WNI7Q"
+      "spotify_url": "https://open.spotify.com/track/1KuNhOubescxn3xD6WNI7Q",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/linkstorage.linkfire.com/5178eba6a8dcbadf05cc772d253b74969da9ba1c.jpg"
     },
     {
       "placement": 34,
@@ -328,7 +357,8 @@
       "artists": [
         "Ed Sheeran"
       ],
-      "spotify_url": "https://open.spotify.com/track/7qiZfU4dY1lWllzX7mPBI3"
+      "spotify_url": "https://open.spotify.com/track/7qiZfU4dY1lWllzX7mPBI3",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/i.pinimg.com/b7c3ed615aea292ba0525c95d15fc9bcda3259db.jpg"
     },
     {
       "placement": 35,
@@ -337,7 +367,8 @@
       "artists": [
         "Ed Sheeran"
       ],
-      "spotify_url": "https://open.spotify.com/track/50nfwKoDiSYg8zOCREWAm5"
+      "spotify_url": "https://open.spotify.com/track/50nfwKoDiSYg8zOCREWAm5",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/images.pristineauction.com/6b7ff5f87001ff3ecfc4aea3dc0c99f90ee08a57.jpg"
     },
     {
       "placement": 36,
@@ -346,7 +377,8 @@
       "artists": [
         "Djo"
       ],
-      "spotify_url": "https://open.spotify.com/track/3qhlB30KknSejmIvZZLjOD"
+      "spotify_url": "https://open.spotify.com/track/3qhlB30KknSejmIvZZLjOD",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/ih1.redbubble.net/380d8ddcee3082d21bb6a16b7f3f260e0e46bd38.jpg"
     },
     {
       "placement": 37,
@@ -356,7 +388,8 @@
         "WizTheMc",
         "bees & honey"
       ],
-      "spotify_url": "https://open.spotify.com/track/33lL8HLB8YO834kMoQeoZd"
+      "spotify_url": "https://open.spotify.com/track/33lL8HLB8YO834kMoQeoZd",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/i.scdn.co/f2c4434e905888374eb22fcc9c24441703d9b911"
     },
     {
       "placement": 38,
@@ -397,7 +430,8 @@
       "artists": [
         "Dua Lipa"
       ],
-      "spotify_url": "https://open.spotify.com/track/5b5cPscqVEMChvDqscVw26"
+      "spotify_url": "https://open.spotify.com/track/5b5cPscqVEMChvDqscVw26",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/kzyfm955.com/7d55d37a663853ef05aab63303effa860b4039a9.png"
     },
     {
       "placement": 42,
@@ -406,7 +440,8 @@
       "artists": [
         "Agnes"
       ],
-      "spotify_url": "https://open.spotify.com/track/3xnyA3owEyMqQn5nj7thw5"
+      "spotify_url": "https://open.spotify.com/track/3xnyA3owEyMqQn5nj7thw5",
+      "image_url": "https://i.scdn.co/image/ab67616d00001e027e26a7ca4c5993b5029641f9"
     },
     {
       "placement": 43,
@@ -418,7 +453,8 @@
         "Ginton",
         "Layefa"
       ],
-      "spotify_url": "https://open.spotify.com/track/4sOLtnLeIFwO4YUUSV5DM5"
+      "spotify_url": "https://open.spotify.com/track/4sOLtnLeIFwO4YUUSV5DM5",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/m.media-amazon.com/93213bbfbe2e0899b675eb45c5bab89064bf0d14.jpg"
     },
     {
       "placement": 44,
@@ -427,7 +463,8 @@
       "artists": [
         "Ed Sheeran"
       ],
-      "spotify_url": "https://open.spotify.com/track/0sCvjs8IVBhxXVhg7jQemt"
+      "spotify_url": "https://open.spotify.com/track/0sCvjs8IVBhxXVhg7jQemt",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/store.edsheeran.com/d1e479b4a89a9f4e08562de1c444c68bb34090a9.jpeg"
     },
     {
       "placement": 45,
@@ -437,19 +474,19 @@
         "WizTheMc",
         "bees & honey"
       ],
-      "spotify_url": "https://open.spotify.com/track/7MO7kNaCWOpslpUH0uIsvi"
+      "spotify_url": "https://open.spotify.com/track/7MO7kNaCWOpslpUH0uIsvi",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/i.scdn.co/e87528ee7cbaae53855552a0"
     },
     {
       "placement": 46,
-      "track_id": "0FIDCNYYjNvPVimz5icugS",
-      "title": "One Of The Girls",
+      "track_id": "1Es7AUAhQvapIcoh3qMKDL",
+      "title": "Timeless",
       "artists": [
         "The Weeknd",
-        "Playboi Carti",
-        "JENNIE"
+        "Playboi Carti"
       ],
-      "spotify_url": "https://open.spotify.com/track/0FIDCNYYjNvPVimz5icugS",
-      "image_url": "https://kimi-web-img.moonshot.cn/img/topmusicarts.com/7b417a50717972257f5a291f20235ee1109f6034.png"
+      "spotify_url": "https://open.spotify.com/track/1Es7AUAhQvapIcoh3qMKDL",
+      "image_url": "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02de79f330bc297af3fae736da"
     },
     {
       "placement": 47,
@@ -468,7 +505,8 @@
       "artists": [
         "Y4ska"
       ],
-      "spotify_url": "https://open.spotify.com/track/00N0RDX7n9W2LcgYQuECL3"
+      "spotify_url": "https://open.spotify.com/track/00N0RDX7n9W2LcgYQuECL3",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/is1-ssl.mzstatic.com/36bb246980bb2ec426e474fd5d14845b7b9dd56a.webp"
     },
     {
       "placement": 49,
@@ -477,7 +515,8 @@
       "artists": [
         "Ed Sheeran"
       ],
-      "spotify_url": "https://open.spotify.com/track/3rmo8F54jFF8OgYsqTxm5d"
+      "spotify_url": "https://open.spotify.com/track/3rmo8F54jFF8OgYsqTxm5d",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/i.discogs.com/485da8342e27db3b35c0fde20eaa91a98cf93552.jpeg"
     },
     {
       "placement": 50,
@@ -486,7 +525,8 @@
       "artists": [
         "Bruno Mars"
       ],
-      "spotify_url": "https://open.spotify.com/track/5g7sDjBhZ4I3gcFIpkrLuI"
+      "spotify_url": "https://open.spotify.com/track/5g7sDjBhZ4I3gcFIpkrLuI",
+      "image_url": "https://kimi-web-img.moonshot.cn/img/m.media-amazon.com/57458edb9b846dc92d1b64d361362da1a6c3832d.jpg"
     }
   ]
 }
